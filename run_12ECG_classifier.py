@@ -68,24 +68,27 @@ def run_12ECG_classifier(data,header_data,classes,model):
     model.to(device)
     model.eval()
 
-    age = np.int(header_data[13].split(':')[1])
-    age = torch.tensor([age / 100]).float()
-
-    sex = str(header_data[14].split(':')[1])
-    sex = sex.split('\n')[0]
-    if sex[0][0] == 'Male':
-        sex = np.ones((1), dtype=np.float32)
-    else:
-        sex = np.zeros((1), dtype=np.float32)
-    sex = torch.tensor(sex).float()
-
-    if torch.sum(torch.isnan(age)) > 0:
+    try:
+        age = np.int(header_data[13].split(':')[1])
+        age = torch.tensor([age / 100]).float()
+    except:
         age = torch.tensor([0]).float()
+        print("age nan")
 
-    if torch.sum(torch.isnan(sex)) > 0:
+    try:
+        sex = str(header_data[14].split(':')[1])
+        sex = sex.split('\n')[0]
+        if sex[0][0] == 'Male':
+            sex = np.ones((1), dtype=np.float32)
+        else:
+            sex = np.zeros((1), dtype=np.float32)
+        sex = torch.tensor(sex).float()
+    except:
         sex = torch.tensor([-1]).float()
+        print("sex nan")
 
-    # Use your classifier here to obtain a label and score for each class. 
+
+    # Use your classifier here to obtain a label and score for each class.
     features=preprocess_ECG(data)
     features = torch.tensor(features).float()
     features = features[None,:,:,:]
