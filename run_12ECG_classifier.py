@@ -109,8 +109,8 @@ def run_12ECG_classifier(data,header_data,classes,model):
     else:
         current_label = np.array(current_label).astype(np.uint8)
         current_score = np.array(current_score).astype(np.float32)
-
-
+    current_score = np.squeeze(current_score)
+    current_label = np.squeeze(current_label)
 
     return current_label, current_score
 
